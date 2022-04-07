@@ -4,26 +4,41 @@ class Game {
     this.wordElement = container.querySelector('.word');
     this.winsElement = container.querySelector('.status__wins');
     this.lossElement = container.querySelector('.status__loss');
-
+    this.timer = document.querySelector(".timer");
     this.reset();
 
     this.registerEvents();
+    this.goTimer();
+
   }
 
   reset() {
     this.setNewWord();
     this.winsElement.textContent = 0;
     this.lossElement.textContent = 0;
+    this.timer.textContent = 40;
   }
 
+  goTimer() {
+    clearInterval(this.set);
+    const timerGo = () => {
+      this.timer.textContent -= 1;
+      if (this.timer.textContent == 0) {
+        alert("Время вышло!");
+        this.fail();
+      }
+    };
+    this.set = setInterval(timerGo, 1000);
+  };
+
   registerEvents() {
-    /*
-      TODO:
-      Написать обработчик события, который откликается
-      на каждый введённый символ.
-      В случае правильного ввода слова вызываем this.success()
-      При неправильном вводе символа - this.fail();
-     */
+    document.addEventListener("keyup", (event) => {
+      if (event.key.toLowerCase() === this.currentSymbol.textContent.toLowerCase()) {
+        this.success();
+      } else {
+        this.fail();
+      }
+    });
   }
 
   success() {
