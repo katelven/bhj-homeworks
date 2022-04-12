@@ -20,15 +20,15 @@ class Game {
   }
 
   goTimer() {
-    clearInterval(this.set);
     const timerGo = () => {
       this.timer.textContent -= 1;
       if (this.timer.textContent == 0) {
         alert("Время вышло!");
         this.fail();
+        clearInterval(this.set);
       }
     };
-    this.set = setInterval(timerGo, 1000);
+    this.set = setInterval (timerGo, 1000);
   };
 
   registerEvents() {
