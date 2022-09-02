@@ -1,28 +1,27 @@
-const editor = document.getElementById("editor");
-const body = document.getElementsByTagName("body");
-const button = document.createElement("button");
+const editor = document.getElementById('editor');
+const clearKey = document.getElementById('clearKey');
 
-editor.addEventListener("input", () => {
-   if (editor.value != "") {
-      localStorage.value = editor.value;
-   }
-})
-editor.addEventListener("click", () => {
-   if (Array.from(document.getElementsByClassName("task__remove"))[0]) {
-      return;
-   }
-   else {
-      button.className = "task__remove";
-      button.textContent = "Очистить содержимое";
-      body[0].appendChild(button);
-   }
-})
+editor.addEventListener('input', saveText);
+window.addEventListener('load', printTextFromLocalStorage);
+clearKey.addEventListener('click', () => editor.value = '');
 
-button.addEventListener("click", () => {
-   editor.value = "";
-   localStorage.clear();
-})
 
-if (localStorage.length > 0) {
-   editor.value = localStorage.value;
+function saveText(event) {
+    localStorage.text = editor.value;
+}
+
+function printTextFromLocalStorage(event) {
+    editor.value = localStorage.getItem('text')
+}
+
+function clear(event) {
+
+    event.preventDefault();
+    editor.value = '';
+
+    if (event.target === clearKey) {
+        localStorage.removeItem('text');
+    } else {
+        localStorage.clear();
+    }
 }
