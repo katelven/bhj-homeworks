@@ -1,29 +1,42 @@
-const visualization = document.getElementById('signin');
-const btn = document.getElementById('signin__btn');
-const userId = document.getElementById('user_id');
-const welcome = document.getElementById('welcome')
 
-visualization.classList.add('signin_active');
+const form = document.getElementById("signin__form");
+const welcome = document.getElementById("welcome");
+const userId = document.getElementById("user_id");
+const signin = document.getElementById("signin");
 
-btn.addEventListener('click', function(event) {
-    event.preventDefault();
-    let form = document.getElementById('signin__form');
+window.onload = function() {
+	
+	if (localStorage.user_id === undefined) {
+	    signin.className = "signin signin_active";
+	} else {
+	    welcome.className = "welcome welcome_active";
+    	userId.textContent = localStorage.user_id;
+	};
+};
+
+form.addEventListener("submit", (e) => {
+	e.preventDefault();
     let formData = new FormData(form);
-
-    let request = new XMLHttpRequest();
-    request.open('POST', 'https://netology-slow-rest.herokuapp.com/auth.php');
+	let request = new XMLHttpRequest();
+	
+    request.open("POST", "https://netology-slow-rest.herokuapp.com/auth.php");
     request.send(formData);
-    request.onreadystatechange = function() {
-        if (request.readyState === request.DONE) {
-            let response = JSON.parse(request.responseText);
-            if (response.success) {
-                localStorage.setItem('userId', response.user_id);
-                visualization.classList.remove('signin_active');
-                welcome.classList.add('welcome_active');
-                userId.textContent = response.user_id;
-            } else {
-                window.alert('Вы ввели неправильный логин и/или пароль')
-            }
-        }
-    }
+	
+	request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status == 200) {
+	        let answerJSON = request.responseText;
+		    let answerObject = JSON.parse(answerJSON);
+		
+		    if (answerObject.success === true) {
+			    welcome.className = "welcome welcome_active";
+			    localStorage.user_id = answerObject.user_id;
+			    userId.textContent = localStorage.user_id;
+			    signin.className = "signin";
+			} else 
+			    if (answerObject.success === false) {
+			        alert("Неверные логин/пароль.");
+		        };
+	    };
+        form.reset()
+    };
 });
